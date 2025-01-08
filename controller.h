@@ -3,6 +3,7 @@
 #include "utils.c"
 
 #define DATA_REC "1"
+#define TIMEOUT 2
 
 void *fault_handler(int fd);
 void *control_loop(int fd, uart_t *sensor);
