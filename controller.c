@@ -6,9 +6,9 @@
 #define BAUD_RATE 9600
 #define OPT "8N1N"
 
-void fault_handler();
+void *fault_handler();
 
-void control_loop();
+void *control_loop();
 
 int main(void) {
     pthread_t *fault_thread, *control_thread;
