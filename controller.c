@@ -11,12 +11,14 @@
 int main(void) {
     int fault_fds[2], control_fds[2], p; // For signalling to fault thread
 
+    // Initialize sensor
     uart_t *remote_sensor = uart_open(DEV_NAME, BAUD_RATE, OPT);
     if (remote_sensor == NULL) {
         perror("failed to connect to sensor");
         exit(-1);
     }
 
+    // Set up fault child pipe
     if (pipe(fault_fds) == -1) {
         perror("pipe failed");
         exit(-1);
@@ -26,7 +28,8 @@ int main(void) {
     if (p > 0) { // Parent
 
         close(fault_fds[0]);
-        // TODO: Fork off control loop
+
+        // Set up control child pipe
         if (pipe(control_fds) == -1) {
             perror("pipe failed");
             exit(-1);
@@ -51,10 +54,8 @@ int main(void) {
 }
 
 void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
-    while (1)
-    {
-        if (uart_bytes_get(remote_sensor) > 0)
-        { // Data available
+    while (1) {
+        if (uart_bytes_get(remote_sensor) > 0) { // Data available
             writefd(fault_fd, DATA_REC, sizeof(int));
             writefd(control_fd, DATA_REC, sizeof(int));
         }
