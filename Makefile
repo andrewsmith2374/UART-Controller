@@ -1,7 +1,7 @@
 all: controller
 
 CFLAGS=-std=gnu99 -Wall -g -Ilibuart-0.2.0.1
-SRC=controller.o control_loop.o libuart-0.2.0.1/uart.o
+SRC=controller.o control_loop.o fault_handler.o libuart-0.2.0.1/uart.o libuart-0.2.0.1/error.o
 
 controller: $(SRC)
 	gcc $(CFLAGS) -pthread -o $@ $^
