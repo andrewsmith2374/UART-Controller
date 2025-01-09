@@ -14,19 +14,19 @@
 int main(void) {
     int fault_fds[2], control_fds[2], p; // For signalling to fault thread
 
-    // Initialize sensor
-    uart_t *remote_sensor = uart_open(SENSOR_NAME, BAUD_RATE, OPT);
-    if (remote_sensor == NULL) {
-        perror("failed to connect to sensor");
-        exit(-1);
-    }
+    // // Initialize sensor
+    // uart_t *remote_sensor = uart_open(SENSOR_NAME, BAUD_RATE, OPT);
+    // if (remote_sensor == NULL) {
+    //     perror("failed to connect to sensor");
+    //     exit(-1);
+    // }
 
-    // Initialize logging UART
-    uart_t *logging  = uart_open(REMOTE_NAME, BAUD_RATE, OPT);
-    if (logging == NULL) {
-        perror("failed to connect to logging UART");
-        exit(-1);
-    }
+    // // Initialize logging UART
+    // uart_t *logging  = uart_open(REMOTE_NAME, BAUD_RATE, OPT);
+    // if (logging == NULL) {
+    //     perror("failed to connect to logging UART");
+    //     exit(-1);
+    // }
 
     // Set up fault child pipe
     if (pipe(fault_fds) == -1) {
@@ -47,16 +47,18 @@ int main(void) {
         p = fork();
         if (p > 0) { // Parent again
             close(control_fds[0]);
-            main_loop(remote_sensor, fault_fds[1], control_fds[1]);
+            // main_loop(remote_sensor, fault_fds[1], control_fds[1]);
             test_loop(fault_fds[1], control_fds[1]);
         } else if (p == 0) { // Child
             close(fault_fds[1]);
             close(control_fds[1]);
-            control_loop(control_fds[1], remote_sensor, logging);
+            // control_loop(control_fds[1], remote_sensor, logging);
+            control_loop(control_fds[1], NULL, NULL);
         }
     } else if (p == 0) { // Child
         close(fault_fds[1]);
-        fault_handler(fault_fds[0], logging);
+        // fault_handler(fault_fds[0], logging);
+        fault_handler(fault_fds[0], NULL);
     } else {
         perror("fork failed");
         exit(-1);
