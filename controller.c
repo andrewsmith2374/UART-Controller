@@ -53,7 +53,7 @@ int main(void) {
             close(fault_fds[1]);
             close(control_fds[1]);
             // control_loop(control_fds[0]], remote_sensor, logging);
-            printf("fd: %d\n", fd);
+            printf("fd: %d\n", control_fds[0]);
             control_loop(control_fds[0], NULL, NULL);
         }
     } else if (p == 0) { // Child
