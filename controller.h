@@ -13,6 +13,7 @@ void *fault_handler(int fd, uart_t *remote);
 void *control_loop(int fd, uart_t *sensor, uart_t *remote);
 
 void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd);
+void test_loop(int fault_fd, int control_fd);
 
 void writefd(int fd, char *message, int len);
 

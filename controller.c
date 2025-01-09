@@ -92,8 +92,6 @@ void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
 void test_loop(int fault_fd, int control_fd) {
 
     char *buf = "25";
-    long temp;
-
     struct timespec sleep_interval;
     sleep_interval.tv_sec = 1;
     sleep_interval.tv_nsec = 0;
