@@ -45,6 +45,7 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
             perror("signal");
             exit(-1);
         } else {
+            printf("ret: %d\n", ret);
             // printf("fd: %d\n", fd);
             temperature = read_temp_data(fd);
             if (temperature > 50) {
@@ -67,7 +68,7 @@ int read_temp_data(int fd) {
     // printf("trying to read\n");
     
     nbytes = read(fd, buf, sizeof(buf) - 1);
-    if (nbytes < sizeof(long)) {
+    if (nbytes < 0) {
         perror("read");
         exit(-1);
     }
