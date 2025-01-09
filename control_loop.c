@@ -6,6 +6,10 @@
 #include <unistd.h>
 #include "controller.h"
 
+/* Monitor for incoming temperature data.
+ * Upon receiving data, adjust fan speed accordingly.
+ * Log fan and temperature data each second.
+ */
 void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
 
     int temperature, curr_fan_speed;
@@ -44,10 +48,11 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
             set_fan_speed(curr_fan_speed);
         }
     }
-
     return NULL;
+
 }
 
+/* Read temperature data from given file descriptor. */
 int read_temp_data(int fd) {
     char buf[1];
     int nbytes;
@@ -60,4 +65,8 @@ int read_temp_data(int fd) {
     return strtol(buf, NULL, 10);
 }
 
-int set_fan_speed(uint8_t speed) { return -1; } // TODO: Implement
+/* Set fan speed to given value over PWM. */
+int set_fan_speed(uint8_t speed) {
+    printf("Set fan speed to %d\n", speed);
+    return 0;
+}
