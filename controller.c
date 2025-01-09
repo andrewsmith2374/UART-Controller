@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <pthread.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -104,5 +105,19 @@ void test_loop(int fault_fd, int control_fd) {
 
         // Sleep for 100ms to reduce overhead while maintaining timing precision
         nanosleep(&sleep_interval, NULL);
+    }
+}
+
+/* Write to a given file descriptor. */
+void writefd(int fd, char *message, int len) {
+    ssize_t ret;
+    while(len != 0 && (ret = write(fd, message, len)) != 0) {
+        if(ret == -1) {
+            if(errno == EINTR) { continue; }
+            perror("write");
+            exit(-1);
+        }
+        len -= ret;
+        message += ret;
     }
 }
