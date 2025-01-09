@@ -66,7 +66,7 @@ int read_temp_data(int fd) {
 
     // printf("trying to read\n");
     
-    nbytes = read(fd, buf, sizeof(long));
+    nbytes = read(fd, buf, sizeof(buf) - 1);
     if (nbytes < sizeof(long)) {
         perror("read");
         exit(-1);
