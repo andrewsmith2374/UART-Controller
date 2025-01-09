@@ -60,6 +60,8 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
 int read_temp_data(int fd) {
     int *buf = NULL;
     int nbytes;
+
+    printf("trying to read\n");
     
     nbytes = read(fd, buf, sizeof(long));
     if (nbytes < 1) {
