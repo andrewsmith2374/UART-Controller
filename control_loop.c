@@ -23,25 +23,18 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
     FD_ZERO(&set);
     FD_SET(fd, &set);
 
-    // Set timeout values
-    timeout.tv_sec = LOGGING_INTERVAL;
-    timeout.tv_usec = 0;
-    ret = select(fd + 1, &set, NULL, NULL, &timeout);
-
     curr_fan_speed = 0;
     while (1) { // Read from pipe
 
         // Initialize set
-        fd_set set;
         FD_ZERO(&set);
         FD_SET(fd, &set);
 
         // Set timeout values
-        timeout.tv_sec = 1;
+        timeout.tv_sec = 5;
         timeout.tv_usec = 0;
 
         ret = select(fd + 1, &set, NULL, NULL, &timeout);
-        printf("Data received\n");
         if (ret == 0) {
             sprintf(buf, "Temperature: %d\nFan Speed: %d\n", temperature, curr_fan_speed);
             printf("%s", buf);
