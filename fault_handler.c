@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <time.h>
 #include "controller.h"
 
 void *fault_handler(int fd) {
@@ -27,4 +28,17 @@ void *fault_handler(int fd) {
             clear_fault();
         }
     }
+}
+
+void handle_fault() {
+    errno = EIO;
+    char msg[256];
+    sprintf(msg, "%ld: communication fault", time(NULL));
+    perror(msg);
+}
+
+void clear_fault() {
+    char msg[256];
+    sprintf(msg, "%ld: communication fault cleared", time(NULL));
+    perror(msg);
 }
