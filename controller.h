@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 #include "libuart-0.2.0.1/uart.h"
 #include "libuart-0.2.0.1/error.h"
 #include "io.c"
