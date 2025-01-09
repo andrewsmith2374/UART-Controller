@@ -6,8 +6,13 @@
 
 #define MSG_SIZE 256
 
+/* Monitor for communication.
+ * Raise communication error upon timeout.
+ * Upon receiving a signal, clear the error.
+ */
 void *fault_handler(int fd, uart_t *remote) {
 
+    int fault = 0;
     struct timeval timeout;
     int ret;
     fd_set set;
@@ -23,13 +28,15 @@ void *fault_handler(int fd, uart_t *remote) {
     while (1) { // Read from pipe
 
         ret = select(fd + 1, &set, NULL, NULL, &timeout);
-        if (ret == 0) { // Timeout occurred
+        if (ret == 0 && !fault) { // Timeout occurred
             handle_fault(remote);
+            fault = 1;
         } else if (ret < 0) {
             perror("signal");
             exit(-1);
-        } else {
+        } else if (fault){
             clear_fault(remote);
+            fault = 0;
         }
     }
 }
