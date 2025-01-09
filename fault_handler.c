@@ -1,8 +1,12 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
+#include <unistd.h>
 #include "controller.h"
 
-void *fault_handler(int fd) {
+#define MSG_SIZE 256
+
+void *fault_handler(int fd, uart_t *remote) {
 
     struct timeval timeout;
     int ret;
@@ -20,25 +24,24 @@ void *fault_handler(int fd) {
 
         ret = select(fd + 1, &set, NULL, NULL, &timeout);
         if (ret == 0) { // Timeout occurred
-            handle_fault();
+            handle_fault(remote);
         } else if (ret < 0) {
             perror("signal");
             exit(-1);
         } else {
-            clear_fault();
+            clear_fault(remote);
         }
     }
 }
 
-void handle_fault() {
-    errno = EIO;
-    char msg[256];
+void handle_fault(uart_t *remote) {
+    char msg[MSG_SIZE];
     sprintf(msg, "%ld: communication fault", time(NULL));
-    perror(msg);
+    log_message(remote, msg, MSG_SIZE);
 }
 
-void clear_fault() {
+void clear_fault(uart_t *remote) {
     char msg[256];
     sprintf(msg, "%ld: communication fault cleared", time(NULL));
-    perror(msg);
+    log_message(remote, msg, MSG_SIZE);
 }

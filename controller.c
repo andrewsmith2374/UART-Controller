@@ -4,7 +4,8 @@
 #include <unistd.h>
 #include "controller.h"
 
-#define DEV_NAME "S0"
+#define SENSOR_NAME "S0"
+#define REMOTE_NAME "R0"
 #define BAUD_RATE 9600
 #define OPT "8N1N"
 
@@ -12,9 +13,16 @@ int main(void) {
     int fault_fds[2], control_fds[2], p; // For signalling to fault thread
 
     // Initialize sensor
-    uart_t *remote_sensor = uart_open(DEV_NAME, BAUD_RATE, OPT);
+    uart_t *remote_sensor = uart_open(SENSOR_NAME, BAUD_RATE, OPT);
     if (remote_sensor == NULL) {
         perror("failed to connect to sensor");
+        exit(-1);
+    }
+
+    // Initialize logging UART
+    uart_t *logging  = uart_open(REMOTE_NAME, BAUD_RATE, OPT);
+    if (logging == NULL) {
+        perror("failed to connect to logging UART");
         exit(-1);
     }
 
@@ -42,11 +50,11 @@ int main(void) {
         } else if (p == 0) { // Child
             close(fault_fds[1]);
             close(control_fds[1]);
-            control_loop(control_fds[1], remote_sensor);
+            control_loop(control_fds[1], remote_sensor, logging);
         }
     } else if (p == 0) { // Child
         close(fault_fds[1]);
-        fault_handler(fault_fds[0]);
+        fault_handler(fault_fds[0], logging);
     } else {
         perror("fork failed");
         exit(-1);
@@ -59,8 +67,9 @@ int main(void) {
 void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
     char *buf = NULL;
     long temp;
+
     struct timespec sleep_interval;
-    sleep_interval.tv_sec = 0;            // Seconds
+    sleep_interval.tv_sec = 0;
     sleep_interval.tv_nsec = 100 * 1000000; // Nanoseconds (100 ms)
 
     while (1) { // Busy waiting but library doesn't provide anything better
@@ -75,6 +84,7 @@ void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
             writefd(fault_fd, DATA_REC, sizeof(char *));
             writefd(control_fd, buf, sizeof(char *));
         }
+        // Sleep for 100ms to reduce overhead while maintaining timing precision
         nanosleep(&sleep_interval, NULL);
     }
 }
