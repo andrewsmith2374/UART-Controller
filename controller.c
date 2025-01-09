@@ -53,7 +53,7 @@ int main(void) {
             close(fault_fds[1]);
             close(control_fds[1]);
             // control_loop(control_fds[0]], remote_sensor, logging);
-            printf("fd: %d\n", control_fds[0]);
+            // printf("fd: %d\n", control_fds[0]);
             control_loop(control_fds[0], NULL, NULL);
         }
     } else if (p == 0) { // Child
@@ -100,7 +100,7 @@ void test_loop(int fault_fd, int control_fd) {
     long buf = 40;
     int data_rec = DATA_REC;
     struct timespec sleep_interval;
-    sleep_interval.tv_sec = 1;
+    sleep_interval.tv_sec = 3;
     sleep_interval.tv_nsec = 0; //500 * 1000000;
 
     while (1) { // Busy waiting but library doesn't provide anything better
