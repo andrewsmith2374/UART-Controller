@@ -43,6 +43,7 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
             perror("signal");
             exit(-1);
         } else {
+            printf("fd: %d\n", fd);
             temperature = read_temp_data(fd);
             if (temperature > 50) {
                 curr_fan_speed = FAN_SPEED;
