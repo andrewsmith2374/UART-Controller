@@ -100,8 +100,8 @@ void test_loop(int fault_fd, int control_fd) {
     long buf = 40;
     int data_rec = DATA_REC;
     struct timespec sleep_interval;
-    sleep_interval.tv_sec = 0;
-    sleep_interval.tv_nsec = 500 * 1000000;
+    sleep_interval.tv_sec = 1;
+    sleep_interval.tv_nsec = 0; //500 * 1000000;
 
     while (1) { // Busy waiting but library doesn't provide anything better
 
