@@ -107,7 +107,7 @@ void test_loop(int fault_fd, int control_fd) {
 
         // Sleep for 1s to reduce overhead while maintaining timing precision
         nanosleep(&sleep_interval, NULL);
-        print("Writing\n");
+        printf("Writing\n");
 
         writefd(fault_fd, &data_rec, sizeof(int));
         writefd(control_fd, &buf, sizeof(long));
