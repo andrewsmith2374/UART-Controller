@@ -41,12 +41,14 @@ void *fault_handler(int fd, uart_t *remote) {
     }
 }
 
+/* Log a fault to UART. */
 void handle_fault(uart_t *remote) {
     char msg[MSG_SIZE];
     sprintf(msg, "%ld: communication fault", time(NULL));
     uart_send(remote, msg, MSG_SIZE);
 }
 
+/* Clear faults from UART. */
 void clear_fault(uart_t *remote) {
     char msg[256];
     sprintf(msg, "%ld: communication fault cleared", time(NULL));

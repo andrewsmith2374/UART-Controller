@@ -36,7 +36,6 @@ int main(void) {
     if (p > 0) { // Parent
 
         close(fault_fds[0]);
-
         // Set up control child pipe
         if (pipe(control_fds) == -1) {
             perror("pipe failed");
