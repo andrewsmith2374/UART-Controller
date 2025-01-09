@@ -44,7 +44,8 @@ void *fault_handler(int fd, uart_t *remote) {
 /* Log a fault to UART. */
 void handle_fault(uart_t *remote) {
     char msg[MSG_SIZE];
-    sprintf(msg, "%ld: communication fault", localtime(NULL));
+    struct tm *local_time = localtime(NULL);
+    sprintf(msg, "%02d:%02d:%02d: communication fault", local_time->tm_hour, local_time->tm_min, local_time->tm_sec);
     printf("%s\n", msg);
     if (uart_send(remote, msg, MSG_SIZE) < 0) {
         perror("uart send");
@@ -55,7 +56,7 @@ void handle_fault(uart_t *remote) {
 /* Clear faults from UART. */
 void clear_fault(uart_t *remote) {
     char msg[256];
-    sprintf(msg, "%ld: communication fault cleared", localtime(NULL));
+    sprintf(msg, "%ld: communication fault cleared", time(NULL));
     printf("%s\n", msg);
     if (uart_send(remote, msg, MSG_SIZE) < 0) {
         perror("uart send");
