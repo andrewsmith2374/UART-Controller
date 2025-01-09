@@ -29,9 +29,8 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
 
         ret = select(fd + 1, &set, NULL, NULL, &timeout);
         if (ret == 0) {
-            // Log to UART
             sprintf(buf, "Temperature: %d\nFan Speed: %d\n", temperature, curr_fan_speed);
-            log_message(remote, buf, strnlen(buf, BUF_SIZE));
+            uart_send(remote, buf, strnlen(buf, BUF_SIZE));
         } else if (ret < 0) {
             perror("signal");
             exit(-1);
@@ -61,4 +60,4 @@ int read_temp_data(int fd) {
     return strtol(buf, NULL, 10);
 }
 
-int set_fan_speed(uint8_t speed) { return -1; }
+int set_fan_speed(uint8_t speed) { return -1; } // TODO: Implement

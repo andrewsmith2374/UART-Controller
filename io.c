@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "controller.h"
 
 /* Write to a given file descriptor. */
 void writefd(int fd, char *message, int len) {
@@ -16,8 +15,4 @@ void writefd(int fd, char *message, int len) {
         len -= ret;
         message += ret;
     }
-}
-
-void log_message(uart_t *uart, char *msg, size_t size) {
-    return;
 }
