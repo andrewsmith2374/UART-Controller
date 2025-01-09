@@ -4,6 +4,8 @@
 
 #define DATA_REC "1"
 #define TIMEOUT 2
+#define MAX_TEMP 150
+#define MIN_TEMP 0
 
 void *fault_handler(int fd);
 void *control_loop(int fd, uart_t *sensor);

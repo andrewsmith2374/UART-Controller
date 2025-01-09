@@ -54,10 +54,20 @@ int main(void) {
 }
 
 void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
-    while (1) {
+    char *buf = NULL;
+    long temp;
+
+    while (1) { // Busy waiting but library doesn't provide anything better
         if (uart_bytes_get(remote_sensor) > 0) { // Data available
-            writefd(fault_fd, DATA_REC, sizeof(int));
-            writefd(control_fd, DATA_REC, sizeof(int));
+            uart_recv(remote_sensor, buf, sizeof(int));
+            temp = strtol(buf, NULL, 10);
+            if (temp < MIN_TEMP || temp > MAX_TEMP) {
+                perror("invalid temperature reading");
+                continue;
+            }
+
+            writefd(fault_fd, DATA_REC, sizeof(char *));
+            writefd(control_fd, buf, sizeof(char *));
         }
     }
 }
