@@ -87,7 +87,7 @@ void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
             }
 
             writefd(fault_fd, &data_rec, sizeof(int));
-            writefd(control_fd, &temp, sizeof(int));
+            writefd(control_fd, &temp, sizeof(long));
         }
         // Sleep for 100ms to reduce overhead while maintaining timing precision
         nanosleep(&sleep_interval, NULL);
@@ -96,7 +96,7 @@ void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
 
 void test_loop(int fault_fd, int control_fd) {
 
-    int buf = 40;
+    long buf = 40;
     int data_rec = DATA_REC;
     struct timespec sleep_interval;
     sleep_interval.tv_sec = 1;
@@ -104,8 +104,8 @@ void test_loop(int fault_fd, int control_fd) {
 
     while (1) { // Busy waiting but library doesn't provide anything better
 
-        writefd(fault_fd, &data_rec, sizeof(char *));
-        writefd(control_fd, &buf, sizeof(char *));
+        writefd(fault_fd, &data_rec, sizeof(int));
+        writefd(control_fd, &buf, sizeof(long));
 
         // Sleep for 1s to reduce overhead while maintaining timing precision
         nanosleep(&sleep_interval, NULL);
