@@ -105,11 +105,11 @@ void test_loop(int fault_fd, int control_fd) {
 
     while (1) { // Busy waiting but library doesn't provide anything better
 
-        writefd(fault_fd, &data_rec, sizeof(int));
-        writefd(control_fd, &buf, sizeof(long));
-
         // Sleep for 1s to reduce overhead while maintaining timing precision
         nanosleep(&sleep_interval, NULL);
+
+        writefd(fault_fd, &data_rec, sizeof(int));
+        writefd(control_fd, &buf, sizeof(long));
     }
 }
 
