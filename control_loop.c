@@ -58,7 +58,7 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
 
 /* Read temperature data from given file descriptor. */
 int read_temp_data(int fd) {
-    char buf[1];
+    int *buf = NULL;
     int nbytes;
     
     nbytes = read(fd, buf, 1);
@@ -66,7 +66,7 @@ int read_temp_data(int fd) {
         perror("read");
         exit(-1);
     }
-    return strtol(buf, NULL, 10);
+    return *buf; // strtol(buf, NULL, 10);
 }
 
 /* Set fan speed to given value over PWM. */

@@ -34,7 +34,7 @@ void *fault_handler(int fd, uart_t *remote) {
         } else if (ret < 0) {
             perror("signal");
             exit(-1);
-        } else if (fault){
+        } else if (fault) {
             clear_fault(remote);
             fault = 0;
         }

@@ -71,6 +71,7 @@ int main(void) {
 void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
     char *buf = NULL;
     long temp;
+    int data_rec = DATA_REC;
 
     struct timespec sleep_interval;
     sleep_interval.tv_sec = 0;
@@ -85,8 +86,8 @@ void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
                 continue;
             }
 
-            writefd(fault_fd, DATA_REC, sizeof(char *));
-            writefd(control_fd, buf, sizeof(char *));
+            writefd(fault_fd, &data_rec, sizeof(int));
+            writefd(control_fd, &temp, sizeof(int));
         }
         // Sleep for 100ms to reduce overhead while maintaining timing precision
         nanosleep(&sleep_interval, NULL);
@@ -95,15 +96,16 @@ void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
 
 void test_loop(int fault_fd, int control_fd) {
 
-    char *buf = "40";
+    int buf = 40;
+    int data_rec = DATA_REC;
     struct timespec sleep_interval;
     sleep_interval.tv_sec = 1;
     sleep_interval.tv_nsec = 0;
 
     while (1) { // Busy waiting but library doesn't provide anything better
 
-        writefd(fault_fd, DATA_REC, sizeof(char *));
-        writefd(control_fd, buf, sizeof(char *));
+        writefd(fault_fd, &data_rec, sizeof(char *));
+        writefd(control_fd, &buf, sizeof(char *));
 
         // Sleep for 1s to reduce overhead while maintaining timing precision
         nanosleep(&sleep_interval, NULL);
@@ -111,7 +113,7 @@ void test_loop(int fault_fd, int control_fd) {
 }
 
 /* Write to a given file descriptor. */
-void writefd(int fd, char *message, int len) {
+void writefd(int fd, void *message, int len) {
     ssize_t ret;
     while(len != 0 && (ret = write(fd, message, len)) != 0) {
         if(ret == -1) {
