@@ -35,6 +35,7 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
         ret = select(fd + 1, &set, NULL, NULL, &timeout);
         if (ret == 0) {
             sprintf(buf, "Temperature: %d\nFan Speed: %d\n", temperature, curr_fan_speed);
+            printf("%s\n", buf);
             if (uart_send(remote, buf, strnlen(buf, BUF_SIZE)) < 0) {
                 perror("uart send");
                 exit(-1);
