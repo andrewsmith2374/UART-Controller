@@ -21,16 +21,16 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
     int ret;
     fd_set set;
 
-    // Initialize set
-    FD_ZERO(&set);
-    FD_SET(fd, &set);
-
     // Set timeout values
     timeout.tv_sec = LOGGING_INTERVAL;
     timeout.tv_usec = 0;
 
     curr_fan_speed = 0;
     while (1) { // Read from pipe
+
+        // Initialize set
+        FD_ZERO(&set);
+        FD_SET(fd, &set);
 
         ret = select(fd + 1, &set, NULL, NULL, &timeout);
         if (ret == 0) {
