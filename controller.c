@@ -53,15 +53,21 @@ int main(void) {
     }
 }
 
+/* Continuously check for communication on remote sensor.
+ * If data available, validate and send data to control loop and fault handler.
+ */
 void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
     char *buf = NULL;
     long temp;
+    struct timespec sleep_interval;
+    sleep_interval.tv_sec = 0;            // Seconds
+    sleep_interval.tv_nsec = 100 * 1000000; // Nanoseconds (100 ms)
 
     while (1) { // Busy waiting but library doesn't provide anything better
         if (uart_bytes_get(remote_sensor) > 0) { // Data available
             uart_recv(remote_sensor, buf, sizeof(int));
             temp = strtol(buf, NULL, 10);
-            if (temp < MIN_TEMP || temp > MAX_TEMP) {
+            if (temp < MIN_TEMP || temp > MAX_TEMP) { // Validate temperature
                 perror("invalid temperature reading");
                 continue;
             }
@@ -69,5 +75,6 @@ void main_loop(uart_t *remote_sensor, int fault_fd, int control_fd) {
             writefd(fault_fd, DATA_REC, sizeof(char *));
             writefd(control_fd, buf, sizeof(char *));
         }
+        nanosleep(&sleep_interval, NULL);
     }
 }
