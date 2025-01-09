@@ -20,9 +20,6 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
     struct timeval timeout;
     int ret;
 
-    // Set timeout values
-    timeout.tv_sec = LOGGING_INTERVAL;
-    timeout.tv_usec = 0;
 
     curr_fan_speed = 0;
     while (1) { // Read from pipe
@@ -31,6 +28,10 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
         fd_set set;
         FD_ZERO(&set);
         FD_SET(fd, &set);
+
+        // Set timeout values
+        timeout.tv_sec = LOGGING_INTERVAL;
+        timeout.tv_usec = 0;
 
         ret = select(fd + 1, &set, NULL, NULL, &timeout);
         printf("Data received\n");
