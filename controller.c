@@ -52,8 +52,8 @@ int main(void) {
         } else if (p == 0) { // Child
             close(fault_fds[1]);
             close(control_fds[1]);
-            // control_loop(control_fds[1], remote_sensor, logging);
-            control_loop(control_fds[1], NULL, NULL);
+            // control_loop(control_fds[0]], remote_sensor, logging);
+            control_loop(control_fds[0], NULL, NULL);
         }
     } else if (p == 0) { // Child
         close(fault_fds[1]);
