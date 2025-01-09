@@ -58,7 +58,7 @@ void *control_loop(int fd, uart_t *sensor, uart_t *remote) {
 
 /* Read temperature data from given file descriptor. */
 int read_temp_data(int fd) {
-    int *buf = NULL;
+    long buf[1];
     int nbytes;
 
     printf("trying to read\n");
